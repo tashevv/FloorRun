@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,20 +6,18 @@ using UnityEngine.UI;
 
 public class GenerateTerrain : MonoBehaviour
 {
-    private List<GameObject> terrain = new List<GameObject>();
-    private int terrainMaxCount;
-    public GameObject floorPrefab;
-    public GameObject mask;
-    public Material colors;
     public static int radius = 25;
     public static float floorLifeTime;
-
-    private static int pickTurn = 0;
+    private List<GameObject> terrain = new List<GameObject>();
+    private int terrainMaxCount;
+    private int pickTurn = 0;
     private Renderer playerRenderer;
     private bool isGamePaused = true;
-
-    public Text timeText;
-    public Text timeTextMasked;
+    [SerializeField] private GameObject floorPrefab;
+    [SerializeField] private GameObject mask;
+    [SerializeField] private Material colors;
+    [SerializeField] private Text timeText;
+    [SerializeField] private Text timeTextMasked;
 
     private void Start()
     {
@@ -46,7 +44,10 @@ public class GenerateTerrain : MonoBehaviour
     {
         if (!isGamePaused)
         {
-            KillPlayer();
+            if (transform.position.y < -2)
+            {
+                KillPlayer();
+            }
         }
     }
 
@@ -158,19 +159,16 @@ public class GenerateTerrain : MonoBehaviour
         pickTurn = (pickTurn + 1) % colorsArray.Length;
     }
 
-    private void KillPlayer()
+    public void KillPlayer()
     {
-        if (transform.position.y < -20)
+        Time.timeScale = 0;
+        int progress = (int)(100 - (float)terrain.Count / terrainMaxCount * 100);
+        timeText.text = "Game over: " + progress + "%";
+        timeTextMasked.text = "Game over: " + progress + "%";
+        if (Input.anyKeyDown)
         {
-            Time.timeScale = 0;
-            timeText.text = "Game over";
-            timeTextMasked.text = "Game over";
-            if (Input.anyKeyDown)
-            {
-                Time.timeScale = 1;
-                SceneManager.LoadScene("Menu");
-            }
-            
+            Time.timeScale = 1;
+            SceneManager.LoadScene("Menu");
         }
     }
 }
