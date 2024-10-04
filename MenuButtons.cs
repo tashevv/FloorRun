@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuButtons : MonoBehaviour
@@ -12,18 +12,18 @@ public class MenuButtons : MonoBehaviour
     }
 
     // Material to set random color
-    public Material materialColor;
+    [SerializeField] private Material materialColor;
 
     // Set a random color using Random.ColorHSV for better randomness and simplicity
-    public void SetRandomColor()
+    private void SetRandomColor()
     {
         materialColor.color = Random.ColorHSV(0f, 1f, 0f, 1f, 0f, 1f);  // Full random range for colors
     }
 
     // Initializes settings like terrain radius and lifetime
-    public void InitializeSettings()
+    private void InitializeSettings()
     {
-        GenerateTerrain.radius = Random.Range(20, 50); // Random radius between 20 and 50
+        GenerateTerrain.radius = Random.Range(25, 50); // Random radius between 20 and 50
         GenerateTerrain.floorLifeTime = GenerateTerrain.radius / 10f; // Set floor lifetime based on radius
     }
 
