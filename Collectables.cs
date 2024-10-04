@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,17 +6,23 @@ using UnityEngine.SceneManagement;
 
 public class Collectables : MonoBehaviour
 {
+    [SerializeField] private Text timeText;
+    [SerializeField] private Text timeTextMasked;
+    [SerializeField] private GameObject collectable;
+    [SerializeField] private AudioClip m_collect;
     private double timeAlive; // Time remaining
-    public Text timeText;
-    public Text timeTextMasked;
-    public Text scoreText;
-    public GameObject collectable;
     private Vector3 position;
+    private AudioSource m_AudioSource;
+    // Reference to GenerateTerrain script
+    private GenerateTerrain generateTerrain;
 
     void Start()
     {
         timeAlive = GenerateTerrain.radius / 2; // Set initial timer
         SpawnCollectable();
+        m_AudioSource = GetComponent<AudioSource>();
+        // Find the GenerateTerrain instance in the scene
+        generateTerrain = FindObjectOfType<GenerateTerrain>(); // Ensure there is only one instance in the scene
     }
 
     void Update()
@@ -34,14 +40,7 @@ public class Collectables : MonoBehaviour
 
         if (timeAlive <= 0)
         {
-            Time.timeScale = 0; // Pause game
-            timeText.text = "Game over";
-            timeTextMasked.text = "Game over";
-            if (Input.anyKeyDown)
-            {
-                Time.timeScale = 1;
-                SceneManager.LoadScene("Menu");
-            }
+            generateTerrain.KillPlayer();
         }
     }
 
@@ -72,11 +71,17 @@ public class Collectables : MonoBehaviour
             timeAlive += GenerateTerrain.radius / 8; // Add to the timer
             Destroy(collider.gameObject); // Destroy the collected item
             SpawnCollectable(); // Spawn the next collectable
+            PlayCollectSound();
         }
     }
 
     private void OnTriggerEnter(Collider col)
     {
         HandleCollectablePickup(col);
+    }
+
+    private void PlayCollectSound()
+    {
+        m_AudioSource.PlayOneShot(m_collect);
     }
 }
