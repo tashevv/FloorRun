@@ -1,11 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CollectableTorque : MonoBehaviour
 {
     // Adds torque to the collectable prefab
-    public Material playerMaterial;
+    [SerializeField] private Material playerMaterial;
 
     void Start()
     {
